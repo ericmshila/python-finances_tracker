@@ -1,33 +1,20 @@
 import sqlite3
-# from db import *
-def init_db():
-    try:
-        conn = sqlite3.connect("expenses.db")
-    except sqlite3.Error as e:
-        print(e)
-    cursor = conn.cursor()
-    cursor.execute(
-    """
-    CREATE TABLE IF NOT EXISTS tbl_expenses (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        amount REAL NOT NULL)
-    """)
-    conn.commit()
-    conn.close()
-    print("Database initialized and table created")
+from db import *
 
 expenses = []
 
 def add_expense():
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
-    expense_name = input("Enter expense description: ")
+    expense_name = input("Enter expense description: ").lower()
     try: 
         expense_amount = float(input("Enter the expense amount: "))
     except ValueError:
         print("Invalid amount. Please enter a number: ")
-    cursor.execute("INSERT INTO expenses (name, amount) VALUES (?, ?)", (expense_name, expense_amount))
+    try:
+        cursor.execute("INSERT INTO tbl_expenses (name, amount) VALUES (?, ?)", (expense_name, expense_amount))
+    except sqlite3.IntegrityError:
+        print("No duplicate values allowed")
     conn.commit()
     conn.close()
     print(f"Expense '{expense_name}' added successfully.")
@@ -36,9 +23,9 @@ def add_expense():
 def view_expenses():
     conn = sqlite3.connect("expenses.db")
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM expenses")
+    cursor.execute("SELECT * FROM tbl_expenses")
     all_expenses = cursor.fetchall()
-    conn.close()
+    #conn.close()
     if all_expenses:
         for exp in expenses:
             print(f"ID: {exp[0]}, Name: {exp[1]}, Amount: {exp[2]}")
@@ -54,6 +41,7 @@ def edit_expense():
             return
         
         # Ask if user wants to change name, amount, or both
+        
         change_name = input("Do you want to change the name? (yes/no): ").strip().lower()
         if change_name == 'yes':
             new_name = input("Enter the new name for the expense: ")
@@ -77,6 +65,7 @@ def edit_expense():
     except ValueError:
         print("Invalid input.")
 
+
 # Function to delete an expense
 def delete_expense():
     view_expenses()
@@ -91,6 +80,7 @@ def delete_expense():
     except ValueError:
         print("Invalid input.")
 
+
 # Simple CLI menu
 def main():
     while True:
@@ -100,7 +90,7 @@ def main():
         print("3. Edit Expense")
         print("4. Delete Expense")
         print("5. Exit")
-        
+        1
         choice = input("Choose an option (1-5): ")
         
         if choice == '1':

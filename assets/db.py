@@ -10,7 +10,7 @@ def init_db():
     """
     CREATE TABLE IF NOT EXISTS tbl_expenses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
+        name TEXT NOT NULL UNIQUE,
         amount REAL NOT NULL)
     """)
     conn.commit()
