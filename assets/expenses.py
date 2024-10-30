@@ -4,7 +4,7 @@ from db import *
 expenses = []
 
 def add_expense():
-    conn = sqlite3.connect("expenses.db")
+    conn = sqlite3.connect("transactions.db")
     cursor = conn.cursor()
     expense_name = input("Enter expense description: ").lower()
     try: 
@@ -22,7 +22,7 @@ def add_expense():
 
 # Function to view all expenses
 def view_expenses():
-    conn = sqlite3.connect("expenses.db")
+    conn = sqlite3.connect("transactions.db")
     cursor = conn.cursor()
     try: 
         cursor.execute("SELECT * FROM tbl_expenses")
@@ -40,7 +40,7 @@ def view_expenses():
 
 # Function to edit an existing expense
 def edit_expense():
-    conn = sqlite3.connect("expenses.db")
+    conn = sqlite3.connect("transactions.db")
     cursor = conn.cursor()
     expense_id = int(input("enter ID of the expense to edit: "))
     try:
@@ -56,21 +56,21 @@ def edit_expense():
             print("Expense ID not found. Please enter a valid ID.")
     except Exception as e:
         print(e)
-    
-    
+        
     conn.close()
 
 
 # Function to delete an expense
 def delete_expense():
-    conn = sqlite3.connect("expenses.db")
+    conn = sqlite3.connect("transactions.db")
     cursor = conn.cursor()
-    expense_id = int(input("Enter the ID of the expense to delete: "))
+    expense_id = int(input("Enter the ID of the tbl_expense to delete: "))
     try: 
-        cursor.execute("SELECT * FROM expenses WHERE id = ?", (expense_id,))
+        cursor.execute("SELECT * FROM tbl_expenses WHERE id = ?", (expense_id,))
         result = cursor.fetchone()
         if result:
-            cursor.execute("DELETE FROM expenses WHERE id = ?", (expense_id,))
+            print(f"you chose {result[1]}")
+            cursor.execute("DELETE FROM tbl_expenses WHERE id = ?", (expense_id,))
             conn.commit()
             print(f"Expense '{result[1]}' deleted")
         else:
