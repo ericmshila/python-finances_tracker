@@ -1,11 +1,16 @@
 import sqlite3
 from db import *
 
+conn = sqlite3.connect("transactions.db")
+cursor = conn.cursor()
+
+def close_connection():
+    conn.close()
+
 expenses = []
 
 def add_expense():
-    conn = sqlite3.connect("transactions.db")
-    cursor = conn.cursor()
+
     expense_name = input("Enter expense description: ").lower()
     try: 
         expense_amount = float(input("Enter the expense amount: "))
@@ -17,7 +22,6 @@ def add_expense():
     except sqlite3.IntegrityError:
         print(f"{expense_name} already exists. No duplicate values allowed")
     conn.commit()
-    conn.close()
     
 
 # Function to view all expenses
@@ -34,8 +38,6 @@ def view_expenses():
             print("No expenses found")
     except Exception as e:
         print(e)
-
-    conn.close()
     
 
 # Function to edit an existing expense
@@ -57,7 +59,7 @@ def edit_expense():
     except Exception as e:
         print(e)
         
-    conn.close()
+    conn.commit()
 
 
 # Function to delete an expense
@@ -78,7 +80,7 @@ def delete_expense():
     except Exception as e:
         print(e)
     
-    conn.close()
+    conn.commit()
 # Simple CLI menu
 def main():
     while True:
@@ -109,3 +111,4 @@ def main():
 if __name__ == "__main__":
     init_db()
     main()
+    conn.close()
