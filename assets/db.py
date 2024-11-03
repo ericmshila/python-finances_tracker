@@ -23,5 +23,5 @@ def init_db():
         amount REAL NOT NULL)
     """)
     conn.commit()
-    conn.close()
     print("Database initialized and table created")
+

@@ -7,10 +7,8 @@ cursor = conn.cursor()
 def close_connection():
     conn.close()
 
-incomes = []
 
 def add_income():
-
     income_name = input("Enter income description: ").lower()
     try: 
         income_amount = float(input("Enter the income amount: "))
@@ -25,7 +23,7 @@ def add_income():
      
 
 # Function to view all incomes
-def view_incomes():
+def view_income():
     conn = sqlite3.connect("transactions.db")
     cursor = conn.cursor()
     try: 
@@ -63,6 +61,8 @@ def edit_income():
 
 # Function to delete an income
 def delete_income():
+    print("Delete from the list of incomes below")
+    view_income()
     income_id = int(input("Enter the ID of the tbl_income to delete: "))
     try: 
         cursor.execute("SELECT * FROM tbl_income WHERE id = ?", (income_id,))
@@ -79,33 +79,3 @@ def delete_income():
     
     conn.commit()
 
-# Simple CLI menu
-def main():
-    while True:
-        print("\nincome Tracker Menu:")
-        print("1. Add income")
-        print("2. View incomes")
-        print("3. Edit income")
-        print("4. Delete income")
-        print("5. Exit")
-    
-        choice = input("Choose an option (1-5): ")
-        
-        if choice == '1':
-            add_income()
-        elif choice == '2':
-            view_incomes()
-        elif choice == '3':
-            edit_income()
-        elif choice == '4':
-            delete_income()
-        elif choice == '5':
-            print("Exiting the program. Goodbye!!!")
-            break
-        else:
-            print("Invalid choice. Please try again.")    
-
-if __name__ == "__main__":
-    init_db()
-    main()
-    close_connection()
