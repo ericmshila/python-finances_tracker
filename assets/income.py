@@ -1,5 +1,6 @@
 import sqlite3
 from db import *
+from os import *
 
 conn = sqlite3.connect("transactions.db")
 cursor = conn.cursor()
@@ -31,7 +32,7 @@ def view_income():
         all_incomes = cursor.fetchall()
         if all_incomes:
             for exp in all_incomes:
-                print(f"ID: {exp[0]}, Name: {exp[1]}, Amount: {exp[2]}")
+                print(f"ID: {exp[0]} | Name: {exp[1]} | Amount: {exp[2]}")
         else:
             print("No incomes found")
     except Exception as e:
@@ -41,41 +42,60 @@ def view_income():
 
 # Function to edit an existing income
 def edit_income():
-    income_id = int(input("enter ID of the income to edit: "))
-    try:
-        cursor.execute("SELECT * FROM tbl_income WHERE id = ?", (income_id,))
-        result = cursor.fetchone()
-        if result:
-            print(f"You chose {result[1]} : {result[2]}")
-            new_amount = float(input(f"Enter new income amount for {result[1]}: "))
-            cursor.execute("UPDATE tbl_income SET amount = ? WHERE id = ?", (new_amount, income_id))
-            conn.commit()
-            print(f"income '{result[1]}' updated successfully to {new_amount}.")
-        else:
-            print("income ID not found. Please enter a valid ID.")
-    except Exception as e:
-        print(e)
+    while True:
+        print("You chose the edit option.")
+        print("---------------------------------------------------")
+        view_income()
+        print("---------------------------------------------------")
+        print("Enter num 0 to return to te previous menu")
+        print("Otherwise, Enter ID of income to edit")
         
-    conn.commit()
+        
+        income_id = int(input("Enter of the income to edit: "))
+        if income_id == 0:
+            print("Bye!!!")
+            break
+        else:
+            try:
+                cursor.execute("SELECT * FROM tbl_income WHERE id = ?", (income_id,))
+                result = cursor.fetchone()
+                if result:
+                    print(f"You chose {result[1]} : {result[2]}")
+                    new_amount = float(input(f"Enter new income amount for {result[1]}: "))
+                    cursor.execute("UPDATE tbl_income SET amount = ? WHERE id = ?", (new_amount, income_id))
+                    conn.commit()
+                    print(f"income '{result[1]}' updated successfully to {new_amount}.")
+                else:
+                    print("income ID not found. Please enter a valid ID.")
+            except Exception as e:
+                print(e)
+        
+
 
 
 # Function to delete an income
 def delete_income():
-    print("Delete from the list of incomes below")
-    view_income()
-    income_id = int(input("Enter the ID of the tbl_income to delete: "))
-    try: 
-        cursor.execute("SELECT * FROM tbl_income WHERE id = ?", (income_id,))
-        result = cursor.fetchone()
-        if result:
-            print(f"you chose {result[1]}")
-            cursor.execute("DELETE FROM tbl_income WHERE id = ?", (income_id,))
-            conn.commit()
-            print(f"income '{result[1]}' deleted")
+    while True:
+        print("You chose the delete option")
+        print("Enter ID of income to delete")
+        print("Enter num 0 to return to te previous menu")
+        view_income()
+        income_id = int(input("Enter the ID of the income to delete: "))
+        if income_id == 0:
+            print("Bye")
+            break
         else:
-            print("income ID not found. Please enter a valid ID.")
-    except Exception as e:
-        print(e)
-    
-    conn.commit()
+            try:
+                cursor.execute("SELECT * FROM tbl_income WHERE id = ?", (income_id,))
+                result = cursor.fetchone()
+                if result:
+                    print(f"you chose {result[1]}")
+                    cursor.execute("DELETE FROM tbl_income WHERE id = ?", (income_id,))
+                    conn.commit()
+                    print(f"income '{result[1]}' deleted")
+                else:
+                    print("income ID not found. Please enter a valid ID.")
+            except Exception as e:
+                print(e)
+        
 

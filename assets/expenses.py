@@ -29,7 +29,7 @@ def view_expenses():
         all_expenses = cursor.fetchall()
         if all_expenses:
             for exp in all_expenses:
-                print(f"ID: {exp[0]}, Name: {exp[1]}, Amount: {exp[2]}")
+                print(f"ID: {exp[0]} | Name: {exp[1]} | Amount: {exp[2]}")
         else:
             print("No expenses found")
     except Exception as e:
@@ -38,46 +38,53 @@ def view_expenses():
 
 # Function to edit an existing expense
 def edit_expense():
-    try:
-        expense_id = int(input("enter ID of the expense to edit: "))
-    except Exception as e:
-        print(e)
-    try:
-        cursor.execute("SELECT * FROM tbl_expenses WHERE id = ?", (expense_id,))
-        result = cursor.fetchone()
-        if result:
-            print(f"You chose {result[1]} : {result[2]}")
-            new_amount = float(input(f"Enter new expense amount for {result[1]}: "))
-            cursor.execute("UPDATE tbl_expenses SET amount = ? WHERE id = ?", (new_amount, expense_id))
-            conn.commit()
-            print(f"Expense '{result[1]}' updated successfully to {new_amount}.")
+    while True:
+        print("You chose the edit option")
+        print("---------------------------------------------------")
+        view_expenses()
+        print("---------------------------------------------------")
+        print("Enter num 0 to return to te previous menu")
+        print("Otherwise, Enter ID of expense to edit")
+        expense_id = int(input("Enter of the expense to edit: "))
+        if expense_id == 0:
+            print("Bye!!!")
+            break
         else:
-            print("Expense ID not found. Please enter a valid ID.")
-    except Exception as e:
-        print(e)
-        
-    conn.commit()
+            try:
+                cursor.execute("SELECT * FROM tbl_expenses WHERE id = ?", (expense_id,))
+                result = cursor.fetchone()
+                if result:
+                    print(f"You chose {result[1]} : {result[2]}")
+                    new_amount = float(input(f"Enter new expense amount for {result[1]}: "))
+                    cursor.execute("UPDATE tbl_expenses SET amount = ? WHERE id = ?", (new_amount, expense_id))
+                    conn.commit()
+                    print(f"Expense '{result[1]}' updated successfully to {new_amount}.")
+                else:
+                    print("Expense ID not found. Please enter a valid ID.")
+            except Exception as e:
+                print(e)
 
 
 # Function to delete an expense
 def delete_expense():
-    print("Delete from the list of expenses below")
-    view_expenses()
-    try:
-        expense_id = int(input("Enter the ID of the tbl_expense to delete: "))
-    except Exception as e:
-        print(e)
-    try: 
-        cursor.execute("SELECT * FROM tbl_expenses WHERE id = ?", (expense_id,))
-        result = cursor.fetchone()
-        if result:
-            print(f"you chose {result[1]}")
-            cursor.execute("DELETE FROM tbl_expenses WHERE id = ?", (expense_id,))
-            conn.commit()
-            print(f"Expense '{result[1]}' deleted")
+    while True:
+        print("Delete from the list of expenses below")
+        print("Enter num 0 to return to te previous menu")
+        view_expenses()
+        expense_id = int(input("Enter the ID of the expense to delete: "))
+        if expense_id == 0:
+            print("Bye")
+            break
         else:
-            print("Expense ID not found. Please enter a valid ID.")
-    except Exception as e:
-        print(e)
-    
-    conn.commit()
+            try:
+                cursor.execute("SELECT * FROM tbl_expenses WHERE id = ?", (expense_id,))
+                result = cursor.fetchone()
+                if result:
+                    print(f"you chose {result[1]}")
+                    cursor.execute("DELETE FROM tbl_expenses WHERE id = ?", (expense_id,))
+                    conn.commit()
+                    print(f"Expense '{result[1]}' deleted")
+                else:
+                    print("Expense ID not found. Please enter a valid ID.")
+            except Exception as e:
+                print(e)

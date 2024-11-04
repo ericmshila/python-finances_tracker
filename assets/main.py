@@ -3,6 +3,7 @@ from expenses import *
 
 def main():
     while True:
+        print("\n MAIN MENU")
         print("\n Welcome to your budget and finances tracker:")
         print("1. Income Menu")
         print("2. Expense Menu")
@@ -35,7 +36,7 @@ def income_menu():
         if choice == '1':
             add_income()
         elif choice == '2':
-            view_incomes()
+            view_income()
         elif choice == '3':
             edit_income()
         elif choice == '4':
